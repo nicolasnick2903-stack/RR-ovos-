@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-creme text-preto antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  input,
+  select,
+  button,
+  textarea {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl border border-black/5 shadow-card p-4;
+  }
+
+  .label {
+    @apply block text-xs font-semibold uppercase tracking-wide text-preto/50 mb-1.5;
+  }
+
+  .input-field {
+    @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[15px] text-preto
+           outline-none transition-colors placeholder:text-preto/30
+           focus:border-dourado focus:ring-2 focus:ring-dourado/30;
+  }
+
+  .btn-primary {
+    @apply w-full rounded-xl bg-dourado py-3 text-[15px] font-bold text-preto shadow-card
+           transition-transform active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100;
+  }
+
+  .btn-ghost {
+    @apply w-full rounded-xl border border-black/10 bg-white py-3 text-[15px] font-semibold text-preto
+           transition-transform active:scale-[0.98];
+  }
+
+  .btn-danger {
+    @apply w-full rounded-xl bg-alerta py-3 text-[15px] font-bold text-white
+           transition-transform active:scale-[0.98];
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold;
+  }
+}
