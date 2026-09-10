@@ -11,6 +11,7 @@ import Clientes from './pages/Clientes.jsx'
 import ClienteDetalhe from './pages/ClienteDetalhe.jsx'
 import NovoPedido from './pages/NovoPedido.jsx'
 import Pedidos from './pages/Pedidos.jsx'
+import Estoque from './pages/Estoque.jsx'
 import Relatorios from './pages/Relatorios.jsx'
 import Configuracoes from './pages/Configuracoes.jsx'
 
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/clientes/:id" element={<ClienteDetalhe />} />
           <Route path="/novo-pedido" element={<NovoPedido />} />
           <Route path="/pedidos" element={<Pedidos />} />
+          <Route path="/estoque" element={<Estoque />} />
           <Route path="/relatorios" element={<Relatorios />} />
           <Route path="/configuracoes" element={<Configuracoes />} />
         </Route>

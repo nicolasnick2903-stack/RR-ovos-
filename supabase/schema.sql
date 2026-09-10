@@ -74,3 +74,59 @@ create policy clientes_auth_all on public.clientes
 drop policy if exists pedidos_auth_all on public.pedidos;
 create policy pedidos_auth_all on public.pedidos
   for all to authenticated using (true) with check (true);
+
+-- =====================================================================
+-- ESTOQUE
+-- Livro de movimentos: entradas somam, saidas subtraem. O saldo é a
+-- soma. Cada pedido gera automaticamente uma saida (gatilho abaixo).
+-- =====================================================================
+create table if not exists public.estoque_movimentos (
+  id          uuid primary key default gen_random_uuid(),
+  tipo        text not null check (tipo in ('entrada', 'saida')),
+  quantidade  integer not null check (quantidade > 0),
+  motivo      text,
+  pedido_id   uuid references public.pedidos(id) on delete cascade,
+  data        date not null default current_date,
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists estoque_mov_data_idx on public.estoque_movimentos (data);
+create index if not exists estoque_mov_pedido_idx on public.estoque_movimentos (pedido_id);
+
+alter table public.estoque_movimentos enable row level security;
+drop policy if exists estoque_auth_all on public.estoque_movimentos;
+create policy estoque_auth_all on public.estoque_movimentos
+  for all to authenticated using (true) with check (true);
+
+-- Mantém o estoque em sincronia com os pedidos.
+create or replace function public.sync_estoque_pedido()
+returns trigger language plpgsql as $$
+begin
+  if (tg_op = 'INSERT') then
+    insert into public.estoque_movimentos (tipo, quantidade, motivo, pedido_id, data)
+    values ('saida', new.quantidade_ovos, 'Pedido', new.id, new.data_pedido);
+    return new;
+  elsif (tg_op = 'UPDATE') then
+    update public.estoque_movimentos
+      set quantidade = new.quantidade_ovos, data = new.data_pedido
+      where pedido_id = new.id;
+    return new;
+  elsif (tg_op = 'DELETE') then
+    delete from public.estoque_movimentos where pedido_id = old.id;
+    return old;
+  end if;
+  return null;
+end $$;
+
+drop trigger if exists pedidos_sync_estoque on public.pedidos;
+create trigger pedidos_sync_estoque
+  after insert or update or delete on public.pedidos
+  for each row execute function public.sync_estoque_pedido();
+
+-- Backfill: cria a saida dos pedidos que já existem.
+insert into public.estoque_movimentos (tipo, quantidade, motivo, pedido_id, data)
+select 'saida', p.quantidade_ovos, 'Pedido', p.id, p.data_pedido
+from public.pedidos p
+where not exists (
+  select 1 from public.estoque_movimentos m where m.pedido_id = p.id
+);

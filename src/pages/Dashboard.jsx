@@ -8,17 +8,20 @@ import StatCard from '../components/StatCard.jsx'
 import PeriodoFiltro from '../components/PeriodoFiltro.jsx'
 import EmptyState from '../components/EmptyState.jsx'
 import { listarPedidos } from '../services/pedidos.js'
+import { saldoEstoque } from '../services/estoque.js'
 import { formatBRL, formatData, hojeISO } from '../utils/format.js'
 import { intervaloPreset, diasEntre } from '../utils/periodo.js'
 
 export default function Dashboard() {
   const [pedidos, setPedidos] = useState([])
+  const [estoque, setEstoque] = useState(null)
   const [loading, setLoading] = useState(true)
   const [periodo, setPeriodo] = useState({ preset: '7dias', de: hojeISO(), ate: hojeISO() })
   const [metrica, setMetrica] = useState('faturamento') // 'faturamento' | 'ovos'
 
   useEffect(() => {
     listarPedidos().then(setPedidos).finally(() => setLoading(false))
+    saldoEstoque().then(setEstoque).catch(() => setEstoque(null))
   }, [])
 
   const hoje = hojeISO()
@@ -59,6 +62,14 @@ export default function Dashboard() {
         <StatCard emoji="📅" label="Pedidos no mês" valor={doMes.length} />
         <StatCard emoji="🥚" label="Ovos no mês" valor={soma(doMes, 'quantidade_ovos')} />
         <StatCard emoji="💰" label="Faturamento do mês" valor={formatBRL(soma(doMes, 'valor_total'))} cor="text-campo" />
+        <Link to="/estoque" className="col-span-2 sm:col-span-3">
+          <StatCard
+            emoji="📦"
+            label="Ovos em estoque"
+            valor={estoque == null ? '—' : estoque}
+            cor={estoque != null && estoque <= 0 ? 'text-alerta' : estoque != null && estoque < 60 ? 'text-dourado-600' : 'text-campo'}
+          />
+        </Link>
       </div>
 
       <div className="card">

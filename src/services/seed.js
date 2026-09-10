@@ -16,6 +16,12 @@ export function temDados() {
   return readAll('clientes').length > 0 || readAll('pedidos').length > 0
 }
 
+const isoDias = (n) => {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  return d.toISOString().slice(0, 10)
+}
+
 export function carregarExemplos() {
   const clientes = NOMES.map(([nome, telefone, endereco]) => ({
     id: novoId(),
@@ -51,8 +57,35 @@ export function carregarExemplos() {
     })
   }
 
+  // Estoque: entradas semanais + a saida de cada pedido (espelha o gatilho do banco).
+  const totalVendido = pedidos.reduce((s, p) => s + p.quantidade_ovos, 0)
+  const movimentos = []
+  for (let semana = 6; semana >= 0; semana--) {
+    movimentos.push({
+      id: novoId(),
+      tipo: 'entrada',
+      quantidade: Math.round(totalVendido / 5),
+      motivo: 'Coleta da semana',
+      pedido_id: null,
+      data: isoDias(semana * 7),
+      created_at: agora(),
+    })
+  }
+  pedidos.forEach((p) => {
+    movimentos.push({
+      id: novoId(),
+      tipo: 'saida',
+      quantidade: p.quantidade_ovos,
+      motivo: 'Pedido',
+      pedido_id: p.id,
+      data: p.data_pedido,
+      created_at: p.created_at,
+    })
+  })
+
   writeAll('clientes', clientes)
   writeAll('pedidos', pedidos)
+  writeAll('estoque_movimentos', movimentos)
 }
 
 export function apagarTudo() {

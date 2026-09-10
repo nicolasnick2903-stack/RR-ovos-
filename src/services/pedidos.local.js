@@ -1,5 +1,6 @@
 import { readAll, writeAll, novoId, agora } from './localStore.js'
 import { normalizarPedido, chavePagamento } from './pedidos.shared.js'
+import { sincronizarPedidoLocal } from './estoque.local.js'
 
 const COL = 'pedidos'
 
@@ -34,6 +35,7 @@ export async function criarPedido(dados) {
   const arr = readAll(COL)
   const novo = { id: novoId(), created_at: agora(), updated_at: agora(), ...limpo }
   writeAll(COL, [...arr, novo])
+  sincronizarPedidoLocal('insert', novo)
   return novo
 }
 
@@ -44,9 +46,11 @@ export async function atualizarPedido(id, dados) {
   if (idx === -1) throw new Error('Pedido não encontrado.')
   arr[idx] = { ...arr[idx], ...limpo, updated_at: agora() }
   writeAll(COL, arr)
+  sincronizarPedidoLocal('update', arr[idx])
   return arr[idx]
 }
 
 export async function excluirPedido(id) {
   writeAll(COL, readAll(COL).filter((p) => p.id !== id))
+  sincronizarPedidoLocal('delete', { id })
 }

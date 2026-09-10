@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, Egg, ClipboardList, BarChart3, Settings, LogOut, RefreshCw } from 'lucide-react'
+import { LayoutDashboard, Users, Egg, ClipboardList, BarChart3, Boxes, Settings, LogOut, RefreshCw } from 'lucide-react'
 import { forcarAtualizacao } from '../utils/pwaUpdate.js'
 import Logo from './Logo.jsx'
 import { useAuth } from '../hooks/useAuth.jsx'
@@ -9,6 +9,7 @@ const NAV = [
   { to: '/clientes', label: 'Clientes', Icon: Users },
   { to: '/novo-pedido', label: 'Novo Pedido', Icon: Egg },
   { to: '/pedidos', label: 'Pedidos', Icon: ClipboardList },
+  { to: '/estoque', label: 'Estoque', Icon: Boxes },
   { to: '/relatorios', label: 'Relatórios', Icon: BarChart3 },
   { to: '/configuracoes', label: 'Configurações', Icon: Settings },
 ]
@@ -85,20 +86,20 @@ export default function AppLayout() {
       </main>
 
       {/* Bottom nav — mobile */}
-      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-black/10 bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-6 border-t border-black/10 bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
         {NAV.filter((n) => n.to !== '/configuracoes').map(({ to, label, Icon, end }) => (
           <NavLink
             key={to}
             to={to}
             end={end}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold transition-colors ${
+              `flex flex-col items-center gap-0.5 px-0.5 py-2 text-[9px] font-semibold leading-tight transition-colors ${
                 isActive ? 'text-dourado-600' : 'text-preto/45'
               }`
             }
           >
-            <Icon size={20} />
-            {label}
+            <Icon size={19} />
+            <span className="truncate">{label === 'Novo Pedido' ? 'Pedido' : label}</span>
           </NavLink>
         ))}
       </nav>
