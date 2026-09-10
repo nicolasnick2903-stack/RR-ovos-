@@ -2,30 +2,42 @@ import { useState } from 'react'
 
 // Usa a logo oficial em public/logo.png. Enquanto o arquivo não estiver lá,
 // mostra um selo provisório com as iniciais — nunca uma logo inventada.
-export default function Logo({ size = 48, className = '' }) {
+// `chip`: envolve num círculo branco, para uso sobre fundos escuros
+// (a arte da logo é sobre fundo branco).
+export default function Logo({ size = 48, chip = false, className = '' }) {
   const [erro, setErro] = useState(false)
 
-  if (erro) {
+  const inner = erro ? (
+    <div
+      className="flex h-full w-full items-center justify-center rounded-full bg-dourado font-extrabold text-preto"
+      style={{ fontSize: size * 0.3 }}
+      aria-label="R&R Ovos Caipiras"
+    >
+      R&amp;R
+    </div>
+  ) : (
+    <img
+      src="/logo.png"
+      alt="R&R Ovos Caipiras"
+      onError={() => setErro(true)}
+      className="h-full w-full object-contain"
+    />
+  )
+
+  if (chip) {
     return (
       <div
-        className={`flex items-center justify-center rounded-full bg-dourado font-extrabold text-preto ${className}`}
-        style={{ width: size, height: size, fontSize: size * 0.34 }}
-        aria-label="R&R Ovos Caipiras"
+        className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-1 shadow-card ${className}`}
+        style={{ width: size, height: size }}
       >
-        R&amp;R
+        {inner}
       </div>
     )
   }
 
   return (
-    <img
-      src="/logo.png"
-      alt="R&R Ovos Caipiras"
-      width={size}
-      height={size}
-      onError={() => setErro(true)}
-      className={`object-contain ${className}`}
-      style={{ width: size, height: size }}
-    />
+    <div className={`shrink-0 ${className}`} style={{ width: size, height: size }}>
+      {inner}
+    </div>
   )
 }

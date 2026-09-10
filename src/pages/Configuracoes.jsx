@@ -5,6 +5,7 @@ import Logo from '../components/Logo.jsx'
 import ConfirmDialog from '../components/ConfirmDialog.jsx'
 import { useAuth } from '../hooks/useAuth.jsx'
 import { useToast } from '../hooks/useToast.jsx'
+import { supabaseAtivo } from '../lib/supabase.js'
 import { carregarExemplos, apagarTudo, temDados } from '../services/seed.js'
 
 export default function Configuracoes() {
@@ -51,27 +52,24 @@ export default function Configuracoes() {
         <p className="text-[11px] font-bold uppercase tracking-wide text-preto/45">Conta</p>
         <Linha rotulo="Usuário" valor={user?.email} />
         <Linha rotulo="Perfil" valor="Administrador" />
+        <Linha rotulo="Banco de dados" valor={supabaseAtivo ? 'Supabase (nuvem)' : 'Local (neste aparelho)'} />
       </div>
 
-      <div className="card space-y-3">
-        <p className="text-[11px] font-bold uppercase tracking-wide text-preto/45">Dados de teste</p>
-        <p className="text-xs text-preto/50">
-          Enquanto o banco de dados definitivo não é conectado, os dados ficam salvos neste
-          aparelho. Use os botões abaixo para testar a interface.
-        </p>
-        <button
-          onClick={() => setConfirmar('exemplos')}
-          className="btn-ghost flex items-center justify-center gap-2"
-        >
-          <Database size={16} /> {temDados() ? 'Recarregar dados de exemplo' : 'Carregar dados de exemplo'}
-        </button>
-        <button
-          onClick={() => setConfirmar('apagar')}
-          className="btn-danger flex items-center justify-center gap-2"
-        >
-          <Trash2 size={16} /> Apagar todos os dados
-        </button>
-      </div>
+      {!supabaseAtivo && (
+        <div className="card space-y-3">
+          <p className="text-[11px] font-bold uppercase tracking-wide text-preto/45">Dados de teste</p>
+          <p className="text-xs text-preto/50">
+            O banco na nuvem ainda não está conectado — os dados ficam neste aparelho. Use os
+            botões abaixo para testar a interface.
+          </p>
+          <button onClick={() => setConfirmar('exemplos')} className="btn-ghost flex items-center justify-center gap-2">
+            <Database size={16} /> {temDados() ? 'Recarregar dados de exemplo' : 'Carregar dados de exemplo'}
+          </button>
+          <button onClick={() => setConfirmar('apagar')} className="btn-danger flex items-center justify-center gap-2">
+            <Trash2 size={16} /> Apagar todos os dados
+          </button>
+        </div>
+      )}
 
       <div className="card">
         <p className="text-[11px] font-bold uppercase tracking-wide text-preto/45">Em breve</p>

@@ -4,6 +4,7 @@ import SplashScreen from './components/SplashScreen.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import AppLayout from './components/AppLayout.jsx'
 import { ToastProvider } from './hooks/useToast.jsx'
+import { useAuth } from './hooks/useAuth.jsx'
 import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Clientes from './pages/Clientes.jsx'
@@ -14,6 +15,7 @@ import Relatorios from './pages/Relatorios.jsx'
 import Configuracoes from './pages/Configuracoes.jsx'
 
 export default function App() {
+  const { pronto } = useAuth()
   const [splash, setSplash] = useState(true)
 
   useEffect(() => {
@@ -21,7 +23,7 @@ export default function App() {
     return () => clearTimeout(t)
   }, [])
 
-  if (splash) return <SplashScreen />
+  if (splash || !pronto) return <SplashScreen />
 
   return (
     <ToastProvider>

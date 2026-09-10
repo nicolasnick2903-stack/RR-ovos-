@@ -14,7 +14,7 @@ export default defineConfig({
         description: 'Controle de clientes, pedidos e relatórios. Qualidade direto do campo.',
         lang: 'pt-BR',
         theme_color: '#0f0f0f',
-        background_color: '#0f0f0f',
+        background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',

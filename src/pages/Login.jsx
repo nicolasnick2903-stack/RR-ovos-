@@ -29,7 +29,7 @@ export default function Login() {
     <div className="flex min-h-dvh flex-col items-center justify-center bg-preto px-6 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center">
-          <Logo size={104} />
+          <Logo size={108} chip />
           <h1 className="mt-4 text-2xl font-extrabold text-white">R&amp;R Ovos Caipiras</h1>
           <p className="mt-1 text-sm font-medium text-dourado">Qualidade direto do campo</p>
         </div>

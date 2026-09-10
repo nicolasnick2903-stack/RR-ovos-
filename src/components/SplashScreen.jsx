@@ -3,7 +3,7 @@ import Logo from './Logo.jsx'
 export default function SplashScreen() {
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-preto px-6 text-center">
-      <Logo size={128} className="animate-fadeInUp" />
+      <Logo size={132} chip className="animate-fadeInUp" />
       <div>
         <h1 className="text-2xl font-extrabold text-white">R&amp;R Ovos Caipiras</h1>
         <p className="mt-1 text-sm font-medium text-dourado">Qualidade direto do campo</p>

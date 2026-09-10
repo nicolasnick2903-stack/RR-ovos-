@@ -61,8 +61,9 @@ for (const s of SIZES) {
   const dest = new URL(`icon-${s}.png`, OUT)
   if (sharp && temLogo) {
     await sharp(readFileSync(logoPath))
-      .resize(s, s, { fit: 'contain', background: { r: 15, g: 15, b: 15, alpha: 1 } })
-      .png()
+      .resize(s, s, { fit: 'contain', background: '#ffffff' })
+      .flatten({ background: '#ffffff' })
+      .png({ palette: true, quality: 85, compressionLevel: 9 })
       .toFile(dest.pathname.replace(/^\//, ''))
   } else if (temLogo) {
     writeFileSync(dest, readFileSync(logoPath)) // fallback: copia sem redimensionar

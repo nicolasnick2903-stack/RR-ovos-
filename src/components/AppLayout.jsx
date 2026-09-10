@@ -60,7 +60,7 @@ export default function AppLayout() {
       {/* Header — mobile */}
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-black/5 bg-preto px-4 py-3 md:hidden">
         <div className="flex items-center gap-2.5">
-          <Logo size={36} />
+          <Logo size={38} chip />
           <div>
             <p className="text-sm font-extrabold leading-tight text-white">R&amp;R Ovos Caipiras</p>
             <p className="text-[10px] text-dourado">Qualidade direto do campo</p>
