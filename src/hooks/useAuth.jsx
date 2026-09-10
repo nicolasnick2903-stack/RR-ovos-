@@ -52,6 +52,11 @@ export function AuthProvider({ children }) {
         if (error) throw new Error(traduzErro(error.message))
         return
       }
+      // Fallback local só existe em desenvolvimento. Em produção sem Supabase
+      // configurado, o app não deve autenticar ninguém.
+      if (!import.meta.env.DEV) {
+        throw new Error('Aplicativo sem banco de dados configurado. Contate o administrador.')
+      }
       const okEmail = import.meta.env.VITE_ADMIN_EMAIL || 'admin@rrovos.com.br'
       const okSenha = import.meta.env.VITE_ADMIN_PASSWORD || 'rrovos123'
       await new Promise((r) => setTimeout(r, 250))
